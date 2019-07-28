@@ -6,7 +6,13 @@ module.exports = models => {
    */
   const createZodiac = (req, res) =>
     models.zodiacs
-      .create({ name: req.body.name })
+      .create({
+        name: req.body.name,
+        leadMonth: req.body.leadMonth,
+        trait: req.body.trait,
+        translation: req.body.translation,
+        longitude: req.body.longitude
+      })
       .then(zodiac => res.status(201).json(zodiac.serialize()))
       .catch(err => {
         if (err.message === "That zodiac already exists") {

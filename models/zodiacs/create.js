@@ -4,6 +4,10 @@ const validateZodiacName = zName =>
 module.exports = (knex, Zodiac) => {
   return params => {
     const name = params.name;
+    const leadMonth = params.leadMonth;
+    const trait = params.trait;
+    const translation = params.translation;
+    const longitude = params.longitude;
 
     if (!validateZodiacName(name)) {
       return Promise.reject(
@@ -11,7 +15,13 @@ module.exports = (knex, Zodiac) => {
       );
     }
     return knex("zodiac_table")
-      .insert({ name: name })
+      .insert({
+        name: name,
+        lead_month: leadMonth,
+        trait: trait,
+        translation: translation,
+        longitude: longitude
+      })
       .then(() => {
         return knex("zodiac_table")
           .where({ name: name })
