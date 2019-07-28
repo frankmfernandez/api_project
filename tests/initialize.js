@@ -1,4 +1,14 @@
-const knex = require("knex");
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "localhost",
+    user: "postgres",
+    password: "Abufmf808",
+    database: "frankfernandez",
+    port: 5433
+  },
+  useNullAsDefault: true
+});
 
 const ignoreError = () => {
   // do nothing

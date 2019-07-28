@@ -3,7 +3,6 @@ const validateZodiacName = zName =>
 
 module.exports = (knex, Zodiac) => {
   return params => {
-    console.log("this is params name", params.name);
     const name = params.name;
 
     if (!validateZodiacName(name)) {
@@ -12,10 +11,10 @@ module.exports = (knex, Zodiac) => {
       );
     }
     return knex("zodiac_table")
-      .insert({ name: name.toLowerCase() })
+      .insert({ name: name })
       .then(() => {
         return knex("zodiac_table")
-          .where({ name: name.toLowerCase() })
+          .where({ name: name })
           .select();
       })
       .then(zodiacs => new Zodiac(zodiacs.pop())) // create a user model out of the plain database response

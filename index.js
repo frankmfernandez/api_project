@@ -1,72 +1,37 @@
+const config = require("./config");
+const services = require("./services")(config);
+const knex = require("knex")(config.db);
+const models = require("./models")(knex);
+const apiRouter = require("./controllers")(models);
+const bodyParser = require("body-parser"); // a middleware plugin to enable express to parse JSON
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
-const knex = require("knex")({
-  client: "pg",
-  connection: {
-    host: "localhost",
-    user: process.env.DB_USER || "postgres",
-    password: "Abufmf808",
-    database: "frankfernandez",
-    port: 5433
-  },
-  useNullAsDefault: true
+app.use(bodyParser.json({ type: "application/json", limit: "50mb" }));
+app.use("/api", apiRouter);
+app.use(express.static(`${__dirname}/views`)); // otherwise load the client app
+
+app.use((err, req, res, next) => {
+  if (err.stack) {
+    if (err.stack.match("node_modules/body-parser"))
+      return res.status(400).send("Invalid JSON");
+  }
+
+  services.logger.log(err);
+  return res.status(500).send("Internal Error.");
 });
 
-app.use(require("./routes/api"));
+app.listen(config.express.port, () => {
+  services.logger.log(`Server up and listening on port ${config.express.port}`);
+});
 
-app.listen(port, () => console.log(`Listening on ${port}`));
-module.exports = { knex };
+//const config = require("./config");
 
-/**
- ********************************DEPENDENCIES********************************
- ****************************************************************************
- */
-
-/*
-Instead of hard-coding configs for your app whenever you need them, I think
-its polite to have them all in one place. Think of config.js as the global
-control panel for your app.
-*/
-//onst config = require("./config");
-
-/*
-Database and other external 'services'. In general, when interfacing
-with an external API it can be helpful to separate your code into
-isolated modules that have a single responsibility.
-
-// In this case, I've made a database 'service', which will contain bundles
-// of handy functions for interacting with our database. There's also a
-// 'logger' service, that just formats the logs in a way that makes them
-// easier to debug.
-
-// Notice that any configs required by the services are explicitly injected
-// here. In principle, you could cut out any of these services and paste it
-// into another project, and assuming your business logic is pretty similar,
-// all you would have to change is the injected config.
-// */
 // const services = require("./services")(config);
 
-// // initialize a connection to the database, and pass this
-// // to the various submodules within
 // const knex = require("knex")(config.db);
-const models = require("./models")(knex);
-
-/*
-Routes for the server. Note that these are explicitly injected the
-initialized 'services', including the database methods and logger.
-We use this kind of 'dependency injection' to prevent arbitrarily
-'require'-ing code everywhere. You'll appreciate this when writing tests
-in this repo. Another benefit, if you use dependency injection its much
-harder to end up with circular dependencies =)
-*/
-const apiRouter = require("./controllers")(models);
 
 //const morgan = require("morgan"); // a popular library for logging your requests
 
-const bodyParser = require("body-parser"); // a middleware plugin to enable express to parse JSON
-
-// and of course, an express server =)
 // const express = require("express");
 
 // const app = express();
@@ -89,29 +54,8 @@ const bodyParser = require("body-parser"); // a middleware plugin to enable expr
 // });
 
 // 3. Parse request bodies as json
-app.use(bodyParser.json({ type: "application/json", limit: "50mb" }));
 
 // 4. If the requests begin with '/api', hand them off to the API router
-app.use("/api", apiRouter);
-app.use(express.static(`${__dirname}/public`)); // otherwise load the client app
 
 // 5. Catch unhandled errors thrown by any of the previous middleware steps
 // eslint-disable-next-line no-unused-vars
-app.use((err, req, res, next) => {
-  if (err.stack) {
-    if (err.stack.match("node_modules/body-parser"))
-      return res.status(400).send("Invalid JSON");
-  }
-
-  services.logger.log(err);
-  return res.status(500).send("Internal Error.");
-});
-
-/**
- ********************************START SERVER********************************
- ****************************************************************************
- */
-
-// app.listen(config.express.port, () => {
-//   services.logger.log(`Server up and listening on port ${config.express.port}`);
-// });

@@ -12,14 +12,17 @@
     "seed": "knex seed:run --specific=seed-filename.js",
     "seed_maker": "knex seed:make seed_name",
     "rollback": "knex migrate:rollback --knexfile models/knexfile.js ",
-    "precommit": "pretty-quick --staged"
+    "precommit": "pretty-quick --staged",
+    "dev": "nodemon ./index.js"
   },
   "author": "frank fernandez",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.17.1",
     "knex": "^0.19.1",
-    "body-parser": "^1.18.3",
+    "moment": "^2.24.0",
+    "nodemon": "^1.19.1",
     "pg": "^7.11.0"
   },
   "devDependencies": {

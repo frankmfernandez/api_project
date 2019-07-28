@@ -1,14 +1,8 @@
-//const config = require("../config");
+const config = require("../config");
 
 module.exports = {
   client: "pg",
-  connection: {
-    host: "localhost",
-    user: process.env.DB_USER || "postgres",
-    password: "Abufmf808",
-    database: "frankfernandez",
-    port: 5433
-  },
+  connection: config.db.connection,
   pool: {
     min: 2,
     max: 10

@@ -1,6 +1,16 @@
 const { expect, assert } = require("chai");
 //const config = require("../config");
-const knex = require("knex");
+const knex = require("knex")({
+  client: "pg",
+  connection: {
+    host: "localhost",
+    user: "postgres",
+    password: "Abufmf808",
+    database: "frankfernandez",
+    port: 5433
+  },
+  useNullAsDefault: true
+});
 const models = require("../models")(knex);
 
 const forcePromiseReject = () => {
