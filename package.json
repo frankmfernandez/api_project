@@ -3,11 +3,34 @@
   "version": "1.0.0",
   "description": "cc api project",
   "main": "index.js",
+  "scripts": {
+    "test": "node tests/initialize.js && mocha tests/test.js && yarn lint",
+    "lint": "eslint --fix .",
+    "start": "node index.js",
+    "migrate": "knex migrate:latest --knexfile models/knexfile.js",
+    "migrate_maker": "knex migrate:make add_zodiac_table --knexfile models/knexfile.js",
+    "seed": "knex seed:run --specific=seed-filename.js",
+    "seed_maker": "knex seed:make seed_name",
+    "rollback": "knex migrate:rollback --knexfile models/knexfile.js ",
+    "precommit": "pretty-quick --staged"
+  },
   "author": "frank fernandez",
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
     "knex": "^0.19.1",
+    "body-parser": "^1.18.3",
     "pg": "^7.11.0"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "eslint": "^5.7.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-config-problems": "^1.1.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.1.2",
+    "mocha": "^5.2.0",
+    "prettier": "^1.12.1",
+    "pretty-quick": "^1.4.1"
   }
 }
